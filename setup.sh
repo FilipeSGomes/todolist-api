@@ -44,10 +44,10 @@ GO
 CREATE INDEX IX_tasks_status ON tasks(status);
 GO
 INSERT INTO users (username, password, role, enabled)
-VALUES ('admin', '\$2a\$10\$slYQmyNdGzin7olVN3p5be4DlH.PKZbv5H8KnzzVgXXbVxzy8N56m', 'ROLE_ADMIN', 1);
+VALUES ('admin', '\$2a\$10\$0AgdAoG8Hu0v9y1O.2lCrO6ucN2qPphnGhDmYAGtC5PiLvt2A8CQy', 'ROLE_ADMIN', 1);
 GO
 INSERT INTO users (username, password, role, enabled)
-VALUES ('user', '\$2a\$10\$wYDCdPZwqVcfJSGgOJ3vJ.0PwXPCXYWp8qhPc2r3aIL4.W8bv8gm2', 'ROLE_USER', 1);
+VALUES ('user', '\$2a\$10\$q6k.3auEx9Ef3/pQ5TIuPOnj6WDX8t0wy2dz9XNm7Mvd094bg8LWK', 'ROLE_USER', 1);
 GO
 EOF
 
@@ -55,17 +55,17 @@ EOF
 echo "5️⃣  Compilando aplicação..."
 mvn clean package -DskipTests > /dev/null 2>&1
 
-# 6. Iniciar aplicação
-echo "6️⃣  Iniciando aplicação Spring Boot..."
-java -jar target/todolist-api-1.0.0.jar > /tmp/app.log 2>&1 &
-sleep 8
-
-# 7. Verificar saúde
-echo "7️⃣  Verificando saúde da aplicação..."
-HEALTH=$(curl -s http://localhost:8080/actuator/health | grep -o '"status":"[^"]*"')
+## 6. Iniciar aplicação
+#echo "6️⃣  Iniciando aplicação Spring Boot..."
+#java -jar target/todolist-api-1.0.0.jar > /tmp/app.log 2>&1 &
+#sleep 8
+#
+## 7. Verificar saúde
+#echo "7️⃣  Verificando saúde da aplicação..."
+#HEALTH=$(curl -s http://localhost:8080/actuator/health | grep -o '"status":"[^"]*"')
 
 if [[ "$HEALTH" == *"UP"* ]]; then
-    echo "✅ Sucesso! Aplicação está rodando em http://localhost:8080"
+#    echo "✅ Sucesso! Aplicação está rodando em http://localhost:8080"
     echo "✅ Banco de dados: localhost,1433 | Database: todolist | User: sa"
     echo ""
     echo "📝 Usuários de teste:"
