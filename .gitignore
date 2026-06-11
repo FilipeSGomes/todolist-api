@@ -23,6 +23,6 @@ dist/
 *.iws
 *.ipr
 out/
-files/
+sdd/
 files.zip
 .claude/
