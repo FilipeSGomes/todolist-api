@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.realmName("todolist-api"))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().authenticated()
                 );

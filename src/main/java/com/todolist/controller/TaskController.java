@@ -6,6 +6,11 @@ import com.todolist.request.TaskUpdateRequest;
 import com.todolist.response.PageResponse;
 import com.todolist.response.TaskResponse;
 import com.todolist.service.TaskService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +23,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
+@Tag(name = "Tasks", description = "Gerenciamento de tarefas")
 public class TaskController {
 
     private final TaskService taskService;
@@ -27,6 +33,12 @@ public class TaskController {
         this.taskService = taskService;
     }
 
+    @Operation(summary = "Criar tarefa")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Tarefa criada"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
     @PostMapping
     public ResponseEntity<TaskResponse> create(@Valid @RequestBody TaskCreateRequest request) {
         Task task = new Task();
@@ -47,8 +59,14 @@ public class TaskController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Listar tarefas", description = "Retorna lista paginada, com filtro opcional por status")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
     @GetMapping
     public ResponseEntity<PageResponse<TaskResponse>> findAll(
+            @Parameter(description = "Filtrar por status: PENDING, IN_PROGRESS, COMPLETED")
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
@@ -74,6 +92,12 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Buscar tarefa por ID")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<TaskResponse> findById(@PathVariable Integer id) {
         Task task = taskService.findById(id);
@@ -89,6 +113,13 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Atualizar tarefa")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Tarefa atualizada"),
+        @ApiResponse(responseCode = "400", description = "Dados inválidos"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponse> update(
             @PathVariable Integer id,
@@ -112,6 +143,12 @@ public class TaskController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Deletar tarefa")
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Tarefa deletada"),
+        @ApiResponse(responseCode = "404", description = "Tarefa não encontrada"),
+        @ApiResponse(responseCode = "401", description = "Não autenticado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Integer id) {
         taskService.delete(id);
